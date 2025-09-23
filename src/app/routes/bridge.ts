@@ -15,12 +15,14 @@ class BridgeController {
   }
 
   async getUsage(req: Request, res: Response) {
-    logger.info({
-      message: 'Request made to usage',
-      client: req.headers['internxt-client'] ?? req.headers['internxt-client-id'],
-      version: req.headers['internxt-version'],
-      user: (req as AuthorizedRequest).user,
-    });
+    logger.info(
+      JSON.stringify({
+        message: 'Request made to usage',
+        client: req.headers['internxt-client'] ?? req.headers['internxt-client-id'],
+        version: req.headers['internxt-version'],
+        user: (req as AuthorizedRequest).user?.email,
+      }),
+    );
     const usage = await this.service.User.getUsage((req as AuthorizedRequest).user);
 
     res.status(200).send(usage);
