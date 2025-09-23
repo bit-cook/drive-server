@@ -2,8 +2,10 @@ import { Router, Request, Response } from 'express';
 
 import { passportAuth } from '../middleware/passport';
 import { UserAttributes } from '../models/user';
+import Logger from '../../lib/logger';
 
 type AuthorizedRequest = Request & { user: UserAttributes };
+const logger = Logger.getInstance();
 
 class BridgeController {
   private service: any;
@@ -13,25 +15,19 @@ class BridgeController {
   }
 
   async getUsage(req: Request, res: Response) {
+    logger.info({
+      headers: req.headers['internxt-client'] ?? req.headers['internxt-client-id'],
+      user: (req as AuthorizedRequest).user,
+    });
     const usage = await this.service.User.getUsage((req as AuthorizedRequest).user);
 
     res.status(200).send(usage);
   }
 
   async getLimit(req: Request, res: Response) {
-    const { 
-      bridgeUser, 
-      userId: bridgePass,
-      updatedAt,
-      uuid
-    } = (req as AuthorizedRequest).user;
+    const { bridgeUser, userId: bridgePass, updatedAt, uuid } = (req as AuthorizedRequest).user;
 
-    const limit = await this.service.Limit.getLimit(
-      bridgeUser, 
-      bridgePass,
-      uuid, 
-      updatedAt
-    );
+    const limit = await this.service.Limit.getLimit(bridgeUser, bridgePass, uuid, updatedAt);
 
     res.status(200).send(limit);
   }
