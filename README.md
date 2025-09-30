@@ -1,5 +1,8 @@
 # Drive Server
 
+## DISCLAIMER
+This is the discontinued older version of the Internxt's Drive Server. Find the new one [here](https://github.com/internxt/drive-server-wip).
+
 ## Prerrequisites
 
 * Node v16
